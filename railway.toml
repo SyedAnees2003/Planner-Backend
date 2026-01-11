@@ -1,0 +1,15 @@
+[build]
+builder = "nixpacks"
+builderSettings = { "NIXPACKS_BUILD_CMD" = "npm install" }
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/api/test"
+restartPolicyType = "on_failure"
+healthCheckTimeout = 120
+
+[environments]
+  [environments.production]
+    [environments.production.variables]
+      NODE_ENV = "production"
+      PORT = "5000"
