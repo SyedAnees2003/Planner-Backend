@@ -10,36 +10,34 @@ const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
+// Update your app.js CORS configuration
 app.use(cors({
-  origin: "*",
-  credentials: true
-}));
-
+    origin: function(origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      const allowedOrigins = [
+        'http://localhost:5173',
+        process.env.FRONTEND_URL,
+        /\.railway\.app$/ // Allow all Railway subdomains
+      ];
+      
+      if (allowedOrigins.some(allowed => {
+        if (allowed instanceof RegExp) return allowed.test(origin);
+        return allowed === origin;
+      })) {
+        return callback(null, true);
+      }
+      
+      return callback(new Error('Not allowed by CORS'), false);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  }));
+  
 app.use(express.json());
 
-// Add a root route for Vercel
-app.get("/", (req, res) => {
-  res.json({
-    message: "Planner Backend API",
-    status: "running",
-    environment: process.env.NODE_ENV || "development",
-    endpoints: {
-      auth: "/api/auth",
-      users: "/api/users",
-      groups: "/api/groups",
-      tasks: "/api/tasks",
-      comments: "/api/comments",
-      test: "/api/test"
-    }
-  });
-});
-
-// Health check endpoint
-app.get("/health", (req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString() });
-});
-
-// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/test", testRoutes);
 app.use("/api/users", userRoutes);
@@ -47,22 +45,5 @@ app.use("/api/groups", groupRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/comments", commentRoutes);
-
-// 404 handler for Vercel
-app.use("*", (req, res) => {
-  res.status(404).json({
-    error: "Not Found",
-    message: `Route ${req.originalUrl} not found`,
-    availableRoutes: [
-      "/",
-      "/health",
-      "/api/auth",
-      "/api/users",
-      "/api/groups",
-      "/api/tasks",
-      "/api/comments"
-    ]
-  });
-});
 
 module.exports = app;

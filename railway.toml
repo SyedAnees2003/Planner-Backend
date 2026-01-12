@@ -3,8 +3,7 @@ builder = "nixpacks"
 builderSettings = { "NIXPACKS_BUILD_CMD" = "npm install" }
 
 [deploy]
-startCommand = "npm start"
-healthcheckPath = "/api/test"
+startCommand = "npm run railway"
 restartPolicyType = "on_failure"
 healthCheckTimeout = 120
 
