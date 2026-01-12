@@ -6,29 +6,34 @@ const PORT = process.env.PORT || 5000;
 
 async function startServer() {
   try {
-    console.log("🔍 Database URL:", process.env.DATABASE_URL ? "Set by Railway" : "Using local");
-    console.log("🌐 Environment:", process.env.NODE_ENV);
+    console.log("🚀 Starting server...");
+    console.log("🔧 NODE_ENV:", process.env.NODE_ENV || 'development');
+    console.log("📦 Database URL:", process.env.DATABASE_URL ? "Set by Railway" : "Using local");
     
-    // Test database connection
+    // Test connection
     await sequelize.authenticate();
-    console.log("✅ Database connection established successfully.");
+    console.log("✅ Database connected!");
     
-    // Sync database (safe for production)
+    // Sync models
+    console.log("🔄 Syncing database...");
     if (process.env.NODE_ENV === 'development') {
       await sequelize.sync({ alter: true });
-      console.log("🔄 Database synchronized (alter mode).");
+      console.log("🔄 Database synchronized (dev)");
     } else {
-      await sequelize.sync();
-      console.log("✅ Database synchronized.");
+      console.log("🚫 Skipping sync in production");
     }
-    
+        
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on port: ${PORT}`);
-      console.log(`📡 Public URL: ${process.env.RAILWAY_PUBLIC_DOMAIN || `http://localhost:${PORT}`}`);
+      console.log(`🎉 Server running on port: ${PORT}`);
+      console.log(`🌐 Local: http://localhost:${PORT}`);
+      if (process.env.RAILWAY_PUBLIC_DOMAIN) {
+        console.log(`🚂 Railway: ${process.env.RAILWAY_PUBLIC_DOMAIN}`);
+      }
     });
   } catch (error) {
-    console.error("❌ Failed to start server:", error.message);
-    console.error("💡 Check if DATABASE_URL is set in Railway variables");
+    console.error("❌ Startup failed!");
+    console.error("Error:", error.message);
+    console.error("Stack:", error.stack);
     process.exit(1);
   }
 }

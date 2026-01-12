@@ -1,18 +1,16 @@
 const { Sequelize } = require('sequelize');
 
-// Get database URL from Railway or use local
-const databaseUrl = process.env.DATABASE_URL || 
-  `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
+const databaseUrl = process.env.DATABASE_URL;
 
 const sequelize = new Sequelize(databaseUrl, {
   dialect: 'mysql',
-  dialectOptions: {
-    ssl: process.env.NODE_ENV === 'production' ? {
+  dialectOptions: databaseUrl && databaseUrl.includes('railway') ? {
+    ssl: {
       require: true,
       rejectUnauthorized: false
-    } : {}
-  },
-  logging: process.env.NODE_ENV === 'development' ? console.log : false
+    }
+  } : {},
+  logging: console.log
 });
 
-module.exports = { sequelize };
+module.exports = sequelize;
