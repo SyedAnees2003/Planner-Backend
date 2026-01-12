@@ -7,12 +7,11 @@ const startServer = async () => {
   try {
     console.log("🚀 Starting server...");
     console.log("🔧 NODE_ENV:", process.env.NODE_ENV);
-    console.log("🔧 PORT:", PORT);
 
     await sequelize.authenticate();
     console.log("✅ Database connected");
 
-    app.listen(PORT, '0.0.0.0', () => {
+    app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
     });
   } catch (err) {
