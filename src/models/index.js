@@ -1,11 +1,13 @@
 const sequelize = require("../config/db");
+const { DataTypes } = require("sequelize");
 
-const User = require("./User");
-const Group = require("./Group");
-const GroupMember = require("./GroupMember");
-const Task = require("./Task");
-const TaskParticipation = require("./TaskParticipation");
-const Comment = require("./Comment");
+// Import models as FUNCTIONS
+const User = require("./User")(sequelize, DataTypes);
+const Group = require("./Group")(sequelize, DataTypes);
+const GroupMember = require("./GroupMember")(sequelize, DataTypes);
+const Task = require("./Task")(sequelize, DataTypes);
+const TaskParticipation = require("./TaskParticipation")(sequelize, DataTypes);
+const Comment = require("./Comment")(sequelize, DataTypes);
 
 User.belongsToMany(Group, { through: GroupMember, foreignKey: "userId" });
 Group.belongsToMany(User, { through: GroupMember, foreignKey: "groupId" });
