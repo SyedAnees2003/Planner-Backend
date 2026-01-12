@@ -1,9 +1,15 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db");
+module.exports = (sequelize, DataTypes) => {
+  const GroupMember = sequelize.define("GroupMember", {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    }
+  });
 
-const GroupMember = sequelize.define("GroupMember", {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  isAdmin: { type: DataTypes.BOOLEAN, defaultValue: false },
-});
-
-module.exports = GroupMember;
+  return GroupMember;
+};

@@ -1,44 +1,44 @@
 const sequelize = require("../config/db");
 const { DataTypes } = require("sequelize");
 
-// Import models as FUNCTIONS
 const User = require("./User")(sequelize, DataTypes);
 const Group = require("./Group")(sequelize, DataTypes);
-const GroupMember = require("./GroupMember")(sequelize, DataTypes);
 const Task = require("./Task")(sequelize, DataTypes);
+const GroupMember = require("./GroupMember")(sequelize, DataTypes);
 const TaskParticipation = require("./TaskParticipation")(sequelize, DataTypes);
 const Comment = require("./Comment")(sequelize, DataTypes);
 
-User.belongsToMany(Group, { through: GroupMember, foreignKey: "userId" });
-Group.belongsToMany(User, { through: GroupMember, foreignKey: "groupId" });
+/* Associations */
+User.belongsToMany(Group, { through: GroupMember });
+Group.belongsToMany(User, { through: GroupMember });
 
-Group.hasMany(Task, { foreignKey: "groupId" });
-Task.belongsTo(Group, { foreignKey: "groupId" });
+Group.hasMany(Task);
+Task.belongsTo(Group);
 
 User.hasMany(Task, { foreignKey: "assignedUserId" });
 Task.belongsTo(User, { foreignKey: "assignedUserId" });
 
-Task.hasMany(TaskParticipation, { foreignKey: "taskId" });
-TaskParticipation.belongsTo(Task, { foreignKey: "taskId" });
+Task.hasMany(TaskParticipation);
+TaskParticipation.belongsTo(Task);
 
-User.hasMany(TaskParticipation, { foreignKey: "userId" });
-TaskParticipation.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(TaskParticipation);
+TaskParticipation.belongsTo(User);
 
-User.hasMany(Comment, { foreignKey: "userId" });
-Comment.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(Comment);
+Comment.belongsTo(User);
 
-Group.hasMany(Comment, { foreignKey: "groupId" });
-Comment.belongsTo(Group, { foreignKey: "groupId" });
+Group.hasMany(Comment);
+Comment.belongsTo(Group);
 
-Task.hasMany(Comment, { foreignKey: "taskId" });
-Comment.belongsTo(Task, { foreignKey: "taskId" });
+Task.hasMany(Comment);
+Comment.belongsTo(Task);
 
 module.exports = {
   sequelize,
   User,
   Group,
-  GroupMember,
   Task,
+  GroupMember,
   TaskParticipation,
   Comment
 };
