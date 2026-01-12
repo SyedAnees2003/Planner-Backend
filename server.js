@@ -1,4 +1,6 @@
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 const app = require("./src/app");
 const { sequelize } = require("./src/models");
 
@@ -13,7 +15,7 @@ async function startServer() {
     // Test connection
     await sequelize.authenticate();
     console.log("✅ Database connected!");
-    
+
     // Sync models
     console.log("🔄 Syncing database...");
     if (process.env.NODE_ENV === 'development') {
@@ -22,7 +24,7 @@ async function startServer() {
     } else {
       console.log("🚫 Skipping sync in production");
     }
-        
+
     app.listen(PORT, () => {
       console.log(`🎉 Server running on port: ${PORT}`);
       console.log(`🌐 Local: http://localhost:${PORT}`);
